@@ -7,7 +7,7 @@ using TestMaker.Business.Admin.Domain.Services;
 
 namespace TM.EventService.Api.Controllers.Admin
 {
-    [Route("api/[controller]")]
+    [Route("api/Admin/[controller]")]
     [ApiController]
     public class EventsController : ControllerBase
     {
