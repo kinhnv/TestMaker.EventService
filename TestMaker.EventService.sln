@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32319.34
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestMaker.EventService.Domain", "TestMaker.EventService.Domain\TestMaker.EventService.Domain.csproj", "{32B62C35-77F8-49C0-9255-1C3476D6A1D7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestMaker.EventService.Infrastructure", "TestMaker.EventService.Infrastructure\TestMaker.EventService.Infrastructure.csproj", "{64070B93-8E57-424B-8967-624938485007}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestMaker.EventService.UnitTests", "TestMaker.EventService.UnitTests\TestMaker.EventService.UnitTests.csproj", "{AE9C0204-26D4-4535-91B2-F7AAC1DB2DE0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestMaker.EventService.Api", "TestMaker.EventService.Api\TestMaker.EventService.Api.csproj", "{124028E6-91BA-4091-840D-9F0F3CFDA3D3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{60EF0FC9-9524-473B-AE74-5B1D975FF144}"
+	ProjectSection(SolutionItems) = preProject
+		.gitlab-ci.yml = .gitlab-ci.yml
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{32B62C35-77F8-49C0-9255-1C3476D6A1D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32B62C35-77F8-49C0-9255-1C3476D6A1D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32B62C35-77F8-49C0-9255-1C3476D6A1D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32B62C35-77F8-49C0-9255-1C3476D6A1D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64070B93-8E57-424B-8967-624938485007}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64070B93-8E57-424B-8967-624938485007}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64070B93-8E57-424B-8967-624938485007}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64070B93-8E57-424B-8967-624938485007}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE9C0204-26D4-4535-91B2-F7AAC1DB2DE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE9C0204-26D4-4535-91B2-F7AAC1DB2DE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE9C0204-26D4-4535-91B2-F7AAC1DB2DE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE9C0204-26D4-4535-91B2-F7AAC1DB2DE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{124028E6-91BA-4091-840D-9F0F3CFDA3D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{124028E6-91BA-4091-840D-9F0F3CFDA3D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{124028E6-91BA-4091-840D-9F0F3CFDA3D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{124028E6-91BA-4091-840D-9F0F3CFDA3D3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {933272A7-E142-4A29-B0BE-AD6538B7CCB8}
+	EndGlobalSection
+EndGlobal
