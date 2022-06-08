@@ -22,7 +22,7 @@ namespace TestMaker.EventService.Domain.Services
 
         Task<bool> CandidateExistsAsync(Guid candidateId);
 
-        Task<List<CandidateAnswer>> GetAnswerAsync(Guid candidateId, Guid questionId);
+        Task<string> GetAnswerAsync(Guid candidateId, Guid questionId);
 
         Task<List<TestMaker.EventService.Domain.Models.CandidateAnswer>> GetAnswersAsync(Guid candidateId);
 
