@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestMaker.Business.Admin.Domain.Models.Candidate
+namespace TestMaker.EventService.Domain.Models.Candidate
 {
     public class CandidateForCreating
     {

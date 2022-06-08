@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestMaker.Business.Admin.Domain.Models.Event
+namespace TestMaker.EventService.Domain.Models.Event
 {
     public class EventForCreating
     {

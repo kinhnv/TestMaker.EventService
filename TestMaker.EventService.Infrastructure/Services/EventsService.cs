@@ -5,26 +5,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TestMaker.Business.Admin.Domain.Models;
-using TestMaker.Business.Admin.Domain.Models.Candidate;
-using TestMaker.Business.Admin.Domain.Models.Event;
-using TestMaker.Business.Admin.Domain.Services;
+using TestMaker.EventService.Domain.Models;
+using TestMaker.EventService.Domain.Models.Event;
+using TestMaker.EventService.Domain.Services;
 using TestMaker.EventService.Infrastructure.Attributes;
 using TestMaker.EventService.Infrastructure.Entities;
 using TestMaker.EventService.Infrastructure.Extensions;
+using TestMaker.EventService.Infrastructure.Repositories.Events;
 
 namespace TestMaker.EventService.Infrastructure.Services
 {
     public class EventsService : IEventsService
     {
         private readonly ApplicationDbContext _dbContext;
+        private readonly IEventsRepository _eventsRepository;
         private readonly IMapper _mapper;
 
-        public EventsService(ApplicationDbContext dbContext, IMapper mapper)
+        public EventsService(ApplicationDbContext dbContext, IEventsRepository eventsRepository, IMapper mapper)
         {
             _dbContext = dbContext;
+            _eventsRepository = eventsRepository;
             _mapper = mapper;
         }
+
+        #region Private
+        private string CreateCode(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[new Random().Next(s.Length)]).ToArray());
+        }
+        #endregion
 
         #region Public
         public async Task<EventForDetails> CreateEventAsync(EventForCreating e)
@@ -96,15 +107,24 @@ namespace TestMaker.EventService.Infrastructure.Services
 
             return await Task.FromResult(result);
         }
-        #endregion
 
-        #region Private
-        private string CreateCode(int length)
+        public async Task<PreparedCandidate> GetPreparedCandidateByCodeAsync(PrepareCode code)
         {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, length)
-                .Select(s => s[new Random().Next(s.Length)]).ToArray());
+            var eventAndCandidate = await _eventsRepository.GetEventAndCandidateAsync(code.EventCode, code.CandidateCode);
+
+            if (eventAndCandidate != null)
+                return new PreparedCandidate
+                {
+                    EventId = eventAndCandidate.Event.EventId,
+                    EventCode = eventAndCandidate.Event.Code,
+                    EventType = eventAndCandidate.Event.Type,
+                    CandidateId = eventAndCandidate.Candidate.CandidateId,
+                    CandidateCode = eventAndCandidate.Candidate.Code,
+                    TestId = eventAndCandidate.Event.TestId
+                };
+            return null;
         }
+
         #endregion
     }
 }

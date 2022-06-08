@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TestMaker.Business.Admin.Domain.Models;
-using TestMaker.Business.Admin.Domain.Models.Event;
+using TestMaker.EventService.Domain.Models;
+using TestMaker.EventService.Domain.Models.Event;
 
-namespace TestMaker.Business.Admin.Domain.Services
+namespace TestMaker.EventService.Domain.Services
 {
     public interface IEventsService
     {
@@ -23,5 +23,7 @@ namespace TestMaker.Business.Admin.Domain.Services
         Task<bool> EventExistsAsync(Guid eventId);
 
         Task<IEnumerable<SelectOption>> GetEventTypeAsSelectOptionsAsync();
+
+        Task<PreparedCandidate> GetPreparedCandidateByCodeAsync(PrepareCode code);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TestMaker.Business.Admin.Domain.Models
+namespace TestMaker.EventService.Domain.Models
 {
     public class SelectOption
     {

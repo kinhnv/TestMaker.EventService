@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using TestMaker.Business.Admin.Domain.Models.Candidate;
-using TestMaker.Business.Admin.Domain.Services;
+using TestMaker.EventService.Domain.Models.Candidate;
+using TestMaker.EventService.Domain.Services;
 
 namespace TestMaker.EventService.Api.Controllers.Admin
 {

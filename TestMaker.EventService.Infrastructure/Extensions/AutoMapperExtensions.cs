@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
-using TestMaker.Business.Admin.Domain.Models.Candidate;
-using TestMaker.Business.Admin.Domain.Models.Event;
+using TestMaker.EventService.Domain.Models.Candidate;
+using TestMaker.EventService.Domain.Models.Event;
 using TestMaker.EventService.Infrastructure.Entities;
 
 namespace TestMaker.EventService.Infrastructure.Extensions
