@@ -30,5 +30,29 @@ namespace TestMaker.EventService.Api.Controllers
         {
             return Ok(await _candidatesService.GetAnswersAsync(candidateId));
         }
+
+        [HttpPost]
+        [Route("SubmitQuestion")]
+        public async Task<IActionResult> SubmitQuestionAsync(CandidateAnswerForSubmit answer)
+        {
+            await _candidatesService.SubmitQuestionAsync(answer);
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("Submit")]
+        public async Task<IActionResult> SubmitCandidateAsync(Guid candidateId)
+        {
+            await _candidatesService.SubmitCandidateAsync(candidateId);
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("Clear")]
+        public async Task<IActionResult> ClearAsync(Guid candidateId)
+        {
+            await _candidatesService.ClearAnswersOfCandidateAsync(candidateId);
+            return Ok();
+        }
     }
 }

@@ -27,5 +27,16 @@ namespace TestMaker.EventService.Infrastructure.Repositories.CandidateAnswers
 
             return await Task.FromResult(candidateAnswers);
         }
+
+        public async Task DeleteCandidateAnswersByCandidateIdAsync(Guid candidateId)
+        {
+            var candidateAnswers = _dbContext.CandidateAnswers.Where(ca => ca.CandidateId == candidateId).ToList();
+
+            if (candidateAnswers.Any())
+            {
+                _dbContext.RemoveRange(candidateAnswers);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 }

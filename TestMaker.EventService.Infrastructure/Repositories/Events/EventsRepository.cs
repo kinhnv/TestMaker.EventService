@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestMaker.EventService.Domain.Models;
 using TestMaker.EventService.Infrastructure.Entities;
 using TestMaker.EventService.Infrastructure.Repository;
 
@@ -24,7 +25,25 @@ namespace TestMaker.EventService.Infrastructure.Repositories.Events
                            Candidate = c
                        };
 
-            return await Task.FromResult( data.FirstOrDefault());
+            return await Task.FromResult(data.FirstOrDefault());
+        }
+
+        public async Task<List<EventAndCandidate>> GetEventsAndCandidatesAsync(EventsAndCandidatesParams p)
+        {
+            var events = _dbContext.Events.AsQueryable();
+            if (p.Type != null)
+            {
+                events = events.Where(e => e.Type == p.Type);
+            }
+            var data = from e in events
+                       join c in _dbContext.Candidates on e.EventId equals c.EventId
+                       select new EventAndCandidate
+                       {
+                           Event = e,
+                           Candidate = c
+                       };
+
+            return await Task.FromResult(data.ToList());
         }
     }
 }

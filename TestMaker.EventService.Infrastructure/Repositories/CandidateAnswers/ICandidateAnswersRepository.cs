@@ -13,5 +13,7 @@ namespace TestMaker.EventService.Infrastructure.Repositories.CandidateAnswers
         Task<CandidateAnswer> GetCandidateAnswerByCandidateIdAndQuestionIdAsync(Guid candidateId, Guid questionId);
 
         Task<List<CandidateAnswer>> GetCandidateAnswersByCandidateIdAsync(Guid candidateId);
+
+        Task DeleteCandidateAnswersByCandidateIdAsync(Guid candidateId);
     }
 }

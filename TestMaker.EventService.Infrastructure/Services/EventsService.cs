@@ -108,12 +108,12 @@ namespace TestMaker.EventService.Infrastructure.Services
             return await Task.FromResult(result);
         }
 
-        public async Task<PreparedCandidate> GetPreparedCandidateByCodeAsync(PrepareCode code)
+        public async Task<PreparedData> GetPreparedCandidateByCodeAsync(PrepareCode code)
         {
             var eventAndCandidate = await _eventsRepository.GetEventAndCandidateAsync(code.EventCode, code.CandidateCode);
 
             if (eventAndCandidate != null)
-                return new PreparedCandidate
+                return new PreparedData
                 {
                     EventId = eventAndCandidate.Event.EventId,
                     EventCode = eventAndCandidate.Event.Code,
@@ -123,6 +123,24 @@ namespace TestMaker.EventService.Infrastructure.Services
                     TestId = eventAndCandidate.Event.TestId
                 };
             return null;
+        }
+
+        public async Task<List<PreparedData>> GetPublicEventsAndCandidatesAsync()
+        {
+            var eventsAndCandidates = await _eventsRepository.GetEventsAndCandidatesAsync(new EventsAndCandidatesParams
+            {
+                Type = (int)EventType.Public
+            });
+
+            return eventsAndCandidates.Select(eventAndCandidate => new PreparedData
+            {
+                EventId = eventAndCandidate.Event.EventId,
+                EventCode = eventAndCandidate.Event.Code,
+                EventType = eventAndCandidate.Event.Type,
+                CandidateId = eventAndCandidate.Candidate.CandidateId,
+                CandidateCode = eventAndCandidate.Candidate.Code,
+                TestId = eventAndCandidate.Event.TestId
+            }).ToList();
         }
 
         #endregion

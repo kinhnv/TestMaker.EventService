@@ -26,6 +26,10 @@ namespace TestMaker.EventService.Domain.Services
 
         Task<List<TestMaker.EventService.Domain.Models.CandidateAnswer>> GetAnswersAsync(Guid candidateId);
 
-        Task SubmitAnswerAsync(CandidateAnswerForSubmit answer);
+        Task SubmitQuestionAsync(CandidateAnswerForSubmit answer);
+
+        Task SubmitCandidateAsync(Guid candidateId);
+
+        Task ClearAnswersOfCandidateAsync(Guid candidateId);
     }
 }

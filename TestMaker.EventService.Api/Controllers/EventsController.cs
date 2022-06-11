@@ -11,10 +11,13 @@ namespace TestMaker.EventService.Api.Controllers
     public class EventsController : ControllerBase
     {
         private readonly IEventsService _eventsService;
+        private readonly ICandidatesService _candidatesService;
 
-        public EventsController(IEventsService eventsService)
+        public EventsController(IEventsService eventsService,
+            ICandidatesService candidatesService)
         {
             _eventsService = eventsService;
+            _candidatesService = candidatesService;
         }
 
         [HttpGet]
@@ -24,6 +27,24 @@ namespace TestMaker.EventService.Api.Controllers
             var result = await _eventsService.GetPreparedCandidateByCodeAsync(code);
 
             return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("GetPublicEventsAndCandidates")]
+        public async Task<IActionResult> GetPublicEventsAndCandidatesAsync()
+        {
+            return Ok(await _eventsService.GetPublicEventsAndCandidatesAsync());
+        }
+
+        [HttpPost]
+        [Route("CreateCandidate")]
+        public async Task<IActionResult> CreateCandidateAsync(Guid eventId)
+        {
+            await _candidatesService.CreateCandidateAsync(new Domain.Models.Candidate.CandidateForCreating
+            {
+                EventId = eventId
+            });
+            return Ok();
         }
     }
 }

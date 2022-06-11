@@ -9,18 +9,25 @@ using TestMaker.EventService.Domain.Models.Candidate;
 using TestMaker.EventService.Domain.Services;
 using TestMaker.EventService.Infrastructure.Entities;
 using TestMaker.EventService.Infrastructure.Repositories.CandidateAnswers;
+using TestMaker.EventService.Infrastructure.Repositories.Candidates;
 
 namespace TestMaker.EventService.Infrastructure.Services
 {
     public class CandidatesService : ICandidatesService
     {
         private readonly ApplicationDbContext _dbContext;
+        private readonly ICandidatesRepository _candidatesRepository;
         private readonly ICandidateAnswersRepository _candidateAnswersRepository;
         private readonly IMapper _mapper;
 
-        public CandidatesService(ApplicationDbContext dbContext, ICandidateAnswersRepository candidateAnswersRepository, IMapper mapper)
+        public CandidatesService(
+            ApplicationDbContext dbContext,
+            ICandidatesRepository candidatesRepository, 
+            ICandidateAnswersRepository candidateAnswersRepository, 
+            IMapper mapper)
         {
             _dbContext = dbContext;
+            _candidatesRepository = candidatesRepository;
             _candidateAnswersRepository = candidateAnswersRepository;
             _mapper = mapper;
         }
@@ -114,11 +121,38 @@ namespace TestMaker.EventService.Infrastructure.Services
             return new List<Domain.Models.CandidateAnswer>();
         }
 
-        public async Task SubmitAnswerAsync(CandidateAnswerForSubmit answer)
+        public async Task SubmitQuestionAsync(CandidateAnswerForSubmit answer)
         {
-            var candidateAnswer = _candidateAnswersRepository.GetCandidateAnswerByCandidateIdAndQuestionIdAsync(answer.CandidateId, answer.QuestionId);
+            var candidateAnswer = await _candidateAnswersRepository.GetCandidateAnswerByCandidateIdAndQuestionIdAsync(answer.CandidateId, answer.QuestionId);
 
+            if (candidateAnswer == null)
+            {
+                await _candidateAnswersRepository.CreateAsync(new Entities.CandidateAnswer
+                {
+                    CandidateId = answer.CandidateId,
+                    QuestionId = answer.QuestionId,
+                    AnswerAsJson = answer.AnswerAsJson
+                });
+            }
+            else
+            {
+                candidateAnswer.AnswerAsJson = answer.AnswerAsJson;
+                await _candidateAnswersRepository.UpdateAsync(candidateAnswer);
+            }
+        }
 
+        public async Task SubmitCandidateAsync(Guid candidateId)
+        {
+            var candidate = await _candidatesRepository.GetAsync(candidateId);
+            if (candidate != null)
+            {
+                candidate.Status = (int)CandidateStatus.Done;
+                await _candidatesRepository.UpdateAsync(candidate);
+            }
+        }
+        public async Task ClearAnswersOfCandidateAsync(Guid candidateId)
+        {
+            await _candidateAnswersRepository.DeleteCandidateAnswersByCandidateIdAsync(candidateId);
         }
     }
 }

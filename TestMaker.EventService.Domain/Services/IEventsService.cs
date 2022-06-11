@@ -24,6 +24,8 @@ namespace TestMaker.EventService.Domain.Services
 
         Task<IEnumerable<SelectOption>> GetEventTypeAsSelectOptionsAsync();
 
-        Task<PreparedCandidate> GetPreparedCandidateByCodeAsync(PrepareCode code);
+        Task<PreparedData> GetPreparedCandidateByCodeAsync(PrepareCode code);
+
+        Task<List<PreparedData>> GetPublicEventsAndCandidatesAsync();
     }
 }
