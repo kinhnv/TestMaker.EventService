@@ -9,5 +9,7 @@ namespace TestMaker.EventService.Domain.Models
     public class EventsAndCandidatesParams
     {
         public int? Type { get; set; }
+
+        public CandidateStatus? CandidateStatus { get; set; }
     }
 }

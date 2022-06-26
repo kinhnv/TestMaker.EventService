@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestMaker.EventService.Infrastructure.Entities
+namespace TestMaker.EventService.Domain.Models
 {
     public enum CandidateStatus
     {

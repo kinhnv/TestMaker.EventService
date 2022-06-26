@@ -129,7 +129,8 @@ namespace TestMaker.EventService.Infrastructure.Services
         {
             var eventsAndCandidates = await _eventsRepository.GetEventsAndCandidatesAsync(new EventsAndCandidatesParams
             {
-                Type = (int)EventType.Public
+                Type = (int)EventType.Public,
+                CandidateStatus = CandidateStatus.Open
             });
 
             return eventsAndCandidates.Select(eventAndCandidate => new PreparedData

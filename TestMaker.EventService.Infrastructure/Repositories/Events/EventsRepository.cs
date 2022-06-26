@@ -35,8 +35,13 @@ namespace TestMaker.EventService.Infrastructure.Repositories.Events
             {
                 events = events.Where(e => e.Type == p.Type);
             }
+            var candidates = _dbContext.Candidates.AsQueryable();
+            if (p.CandidateStatus != null)
+            {
+                candidates = candidates.Where(e => e.Status == (int)p.CandidateStatus);
+            }
             var data = from e in events
-                       join c in _dbContext.Candidates on e.EventId equals c.EventId into c2
+                       join c in candidates on e.EventId equals c.EventId into c2
                        from c in c2.DefaultIfEmpty()
                        select new EventAndCandidate
                        {
