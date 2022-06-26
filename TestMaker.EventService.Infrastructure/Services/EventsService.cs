@@ -93,15 +93,15 @@ namespace TestMaker.EventService.Infrastructure.Services
             return await _dbContext.Events.AnyAsync(e => e.EventId == eventId);
         }
 
-        public async Task<IEnumerable<SelectOption>> GetEventTypeAsSelectOptionsAsync()
+        public async Task<IEnumerable<SelectOption<int>>> GetEventTypeAsSelectOptionsAsync()
         {
-            var result = new List<SelectOption>();
+            var result = new List<SelectOption<int>>();
             foreach (EventType value in Enum.GetValues(typeof(EventType)))
             {
-                result.Add(new SelectOption
+                result.Add(new SelectOption<int>
                 {
                     Title = value.GetName(),
-                    Value = ((int)value).ToString(),
+                    Value = (int)value,
                 });
             }
 

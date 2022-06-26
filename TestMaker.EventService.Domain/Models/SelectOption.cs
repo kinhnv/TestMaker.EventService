@@ -2,9 +2,9 @@
 
 namespace TestMaker.EventService.Domain.Models
 {
-    public class SelectOption
+    public class SelectOption<T>
     {
-        public string Value { get; set; }
+        public T Value { get; set; }
 
         public string Title { get; set; }
     }

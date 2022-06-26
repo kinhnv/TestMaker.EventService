@@ -22,7 +22,7 @@ namespace TestMaker.EventService.Domain.Services
 
         Task<bool> EventExistsAsync(Guid eventId);
 
-        Task<IEnumerable<SelectOption>> GetEventTypeAsSelectOptionsAsync();
+        Task<IEnumerable<SelectOption<int>>> GetEventTypeAsSelectOptionsAsync();
 
         Task<PreparedData> GetPreparedCandidateByCodeAsync(PrepareCode code);
 
