@@ -137,8 +137,8 @@ namespace TestMaker.EventService.Infrastructure.Services
                 EventId = eventAndCandidate.Event.EventId,
                 EventCode = eventAndCandidate.Event.Code,
                 EventType = eventAndCandidate.Event.Type,
-                CandidateId = eventAndCandidate.Candidate.CandidateId,
-                CandidateCode = eventAndCandidate.Candidate.Code,
+                CandidateId = eventAndCandidate?.Candidate?.CandidateId ?? Guid.Empty,
+                CandidateCode = eventAndCandidate?.Candidate?.Code ?? string.Empty,
                 TestId = eventAndCandidate.Event.TestId
             }).ToList();
         }

@@ -17,8 +17,8 @@ namespace TestMaker.EventService.Infrastructure.Repositories.Events
 
         public async Task<EventAndCandidate> GetEventAndCandidateAsync(string eventCode, string candidateCode)
         {
-            var data = from e in _dbContext.Events
-                       join c in _dbContext.Candidates on e.EventId equals c.EventId
+            var data = from e in _dbContext.Events.Where(x => x.Code == eventCode)
+                       join c in _dbContext.Candidates.Where(x => x.Code == candidateCode) on e.EventId equals c.EventId
                        select new EventAndCandidate
                        {
                            Event = e,
@@ -36,7 +36,8 @@ namespace TestMaker.EventService.Infrastructure.Repositories.Events
                 events = events.Where(e => e.Type == p.Type);
             }
             var data = from e in events
-                       join c in _dbContext.Candidates on e.EventId equals c.EventId
+                       join c in _dbContext.Candidates on e.EventId equals c.EventId into c2
+                       from c in c2.DefaultIfEmpty()
                        select new EventAndCandidate
                        {
                            Event = e,

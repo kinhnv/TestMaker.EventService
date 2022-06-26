@@ -11,9 +11,9 @@ namespace TestMaker.EventService.Infrastructure.Entities
 {
     public enum EventType
     {
-        [Name("Nhóm riêng")]
+        [Name("Bảo mật")]
         Private = 0,
-        [Name("Nhóm chung")]
+        [Name("Công khai")]
         Public = 1,
     }
 

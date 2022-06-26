@@ -38,7 +38,7 @@ namespace TestMaker.EventService.Api.Controllers
 
         [HttpPost]
         [Route("CreateCandidate")]
-        public async Task<IActionResult> CreateCandidateAsync(Guid eventId)
+        public async Task<IActionResult> CreateCandidateAsync([FromQuery]Guid eventId)
         {
             await _candidatesService.CreateCandidateAsync(new Domain.Models.Candidate.CandidateForCreating
             {
