@@ -19,9 +19,9 @@ namespace TestMaker.EventService.Api.Controllers.Admin
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetEvents()
+        public async Task<ActionResult> GetEvents([FromQuery] GetEventsFilter filter)
         {
-            return Ok(await _eventsService.GetEventsAsync());
+            return Ok(await _eventsService.GetEventsAsync(filter));
         }
 
         [HttpGet("{id}")]

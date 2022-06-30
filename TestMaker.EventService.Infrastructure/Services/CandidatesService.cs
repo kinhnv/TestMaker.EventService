@@ -72,7 +72,7 @@ namespace TestMaker.EventService.Infrastructure.Services
             return await Task.FromResult(_mapper.Map<CandidateForDetails>(candidate));
         }
 
-        public async Task<IEnumerable<CandidateForList>> GetCandidatesAsync(GetCandidateFilter filter)
+        public async Task<IEnumerable<CandidateForList>> GetCandidatesAsync(GetCandidatesFilter filter)
         {
             var query = _dbContext.Candidates.AsQueryable();
             if (filter != null)

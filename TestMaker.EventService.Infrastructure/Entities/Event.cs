@@ -43,5 +43,8 @@ namespace TestMaker.EventService.Infrastructure.Entities
 
         [Required]
         public Guid TestId { get; set; }
+
+        [Required]
+        public bool IsDeleted { get; set; }
     }
 }

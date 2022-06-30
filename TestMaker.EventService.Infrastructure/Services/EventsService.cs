@@ -50,10 +50,11 @@ namespace TestMaker.EventService.Infrastructure.Services
 
         public async Task DeleteEventAsync(Guid eventId)
         {
-            var e = await _dbContext.Events.FindAsync(eventId);
-            if (e != null)
+            var entity = await _dbContext.Events.FindAsync(eventId);
+            if (entity != null)
             {
-                _dbContext.Events.Remove(e);
+                entity.IsDeleted = true;
+                _dbContext.Entry(entity).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();
             }
         }
@@ -82,9 +83,11 @@ namespace TestMaker.EventService.Infrastructure.Services
             return await Task.FromResult(_mapper.Map<EventForDetails>(e));
         }
 
-        public async Task<IEnumerable<EventForList>> GetEventsAsync()
+        public async Task<IEnumerable<EventForList>> GetEventsAsync(GetEventsFilter getEventsParams)
         {
-            var events = _dbContext.Events.ToList().Select(e => _mapper.Map<EventForList>(e));
+            var query = _dbContext.Events.AsQueryable().Where(x => x.IsDeleted == getEventsParams.IsDeleted);
+
+            var events = query.ToList().Select(e => _mapper.Map<EventForList>(e));
             return await Task.FromResult(events);
         }
 

@@ -23,8 +23,11 @@ namespace TestMaker.EventService.Infrastructure.Entities
         {
             modelBuilder.Entity<Event>().HasKey(e => e.EventId);
             modelBuilder.Entity<Event>().Property(e => e.Type).HasDefaultValue((int)EventType.Private);
+            modelBuilder.Entity<Event>().Property(e => e.IsDeleted).HasDefaultValue(false);
 
             modelBuilder.Entity<Candidate>().HasKey(c => c.CandidateId);
+            modelBuilder.Entity<Candidate>().Property(e => e.IsDeleted).HasDefaultValue(false);
+            modelBuilder.Entity<Candidate>().Property(e => e.CreatedAt).HasDefaultValue(new DateTime(2022, 1, 1));
 
             modelBuilder.Entity<CandidateAnswer>().HasKey(ca => new
             {

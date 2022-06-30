@@ -10,7 +10,7 @@ namespace TestMaker.EventService.Domain.Services
 {
     public interface ICandidatesService
     {
-        Task<IEnumerable<CandidateForList>> GetCandidatesAsync(GetCandidateFilter filter);
+        Task<IEnumerable<CandidateForList>> GetCandidatesAsync(GetCandidatesFilter filter);
 
         Task<CandidateForDetails> GetCandidateAsync(Guid candidateId);
 

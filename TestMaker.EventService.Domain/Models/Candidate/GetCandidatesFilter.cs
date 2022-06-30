@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TestMaker.EventService.Domain.Models.Candidate
 {
-    public class GetCandidateFilter
+    public class GetCandidatesFilter
     {
         public Guid EventId { get; set; }
     }

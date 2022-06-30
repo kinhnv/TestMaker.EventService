@@ -19,7 +19,7 @@ namespace TestMaker.EventService.Api.Controllers.Admin
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetCandidates([FromQuery] GetCandidateFilter filter)
+        public async Task<ActionResult> GetCandidates([FromQuery] GetCandidatesFilter filter)
         {
             return Ok(await _candidatesService.GetCandidatesAsync(filter));
         }

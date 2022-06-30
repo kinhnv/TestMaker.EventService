@@ -10,7 +10,7 @@ namespace TestMaker.EventService.Domain.Services
 {
     public interface IEventsService
     {
-        Task<IEnumerable<EventForList>> GetEventsAsync();
+        Task<IEnumerable<EventForList>> GetEventsAsync(GetEventsFilter getEventsParams);
 
         Task<EventForDetails> GetEventAsync(Guid eventId);
 
