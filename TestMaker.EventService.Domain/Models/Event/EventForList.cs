@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,7 +17,7 @@ namespace TestMaker.EventService.Domain.Models.Event
 
         public string Name { get; set; }
 
-        public int Type { get; set; }
+        public string Type { get; set; }
 
         public Guid TestId { get; set; }
     }

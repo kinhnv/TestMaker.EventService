@@ -51,12 +51,30 @@ namespace TestMaker.EventService.Infrastructure.Services
         public async Task DeleteEventAsync(Guid eventId)
         {
             var entity = await _dbContext.Events.FindAsync(eventId);
-            if (entity != null)
+            if (entity != null && !entity.IsDeleted)
             {
                 entity.IsDeleted = true;
                 _dbContext.Entry(entity).State = EntityState.Modified;
+                var candidates = await _dbContext.Candidates.Where(x => x.EventId == eventId).ToListAsync();
+                foreach (var candidate in candidates)
+                {
+                    candidate.IsDeleted = true;
+                    _dbContext.Entry(candidate).State = EntityState.Modified;
+                }
                 await _dbContext.SaveChangesAsync();
             }
+        }
+
+        public async Task RestoreEventAsync(Guid eventId)
+        {
+            var entity = await _dbContext.Events.FindAsync(eventId);
+            if (entity != null && entity.IsDeleted)
+            {
+                entity.IsDeleted = false;
+                _dbContext.Entry(entity).State = EntityState.Modified;
+                await _dbContext.SaveChangesAsync();
+            }
+
         }
 
         public async Task EditEventAsync(EventForEditing e)
