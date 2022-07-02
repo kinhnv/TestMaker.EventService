@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestMaker.Common.Repository;
 
 namespace TestMaker.EventService.Infrastructure.Entities
 {
@@ -25,8 +26,5 @@ namespace TestMaker.EventService.Infrastructure.Entities
 
         [Required]
         public DateTime CreatedAt { get; set; }
-
-        [Required]
-        public bool IsDeleted { get; set; }
     }
 }

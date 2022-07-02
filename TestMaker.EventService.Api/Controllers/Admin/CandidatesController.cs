@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TestMaker.Common.Models;
 using TestMaker.EventService.Domain.Models.Candidate;
 using TestMaker.EventService.Domain.Services;
 
@@ -19,22 +20,25 @@ namespace TestMaker.EventService.Api.Controllers.Admin
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetCandidates([FromQuery] GetCandidatesFilter filter)
+        public async Task<ActionResult> GetCandidates([FromQuery] GetCandidatesParams filter)
         {
-            return Ok(await _candidatesService.GetCandidatesAsync(filter));
+            var result = await _candidatesService.GetCandidatesAsync(new GetCandidatesParams
+            {
+                Take = filter.Take,
+                Page = filter.Page,
+                IsDeleted = filter.IsDeleted,
+                EventId = filter.EventId,
+            });
+
+            return Ok(new ApiResult<GetPaginationResult<CandidateForList>>(result));
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult> GetCandidate(Guid id)
         {
-            var e = await _candidatesService.GetCandidateAsync(id);
+            var result = await _candidatesService.GetCandidateAsync(id);
 
-            if (e == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(e);
+            return Ok(new ApiResult<CandidateForDetails>(result));
         }
 
         [HttpPut("{id}")]
@@ -42,45 +46,26 @@ namespace TestMaker.EventService.Api.Controllers.Admin
         {
             if (id != candidate.CandidateId)
             {
-                return BadRequest();
+                return Ok(new ApiResult());
             }
 
-            try
-            {
-                await _candidatesService.EditCandidateAsync(candidate);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _candidatesService.CandidateExistsAsync(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            var result = await _candidatesService.EditCandidateAsync(candidate);
 
-            return NoContent();
+            return Ok(new ApiResult<CandidateForDetails>(result));
         }
 
         [HttpPost]
         public async Task<ActionResult> PostCandidate(CandidateForCreating candidate)
         {
-            return Ok(await _candidatesService.CreateCandidateAsync(candidate));
+            var result = await _candidatesService.CreateCandidateAsync(candidate);
+            return Ok(new ApiResult<CandidateForDetails>(result));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCandidate(Guid id)
         {
-            if (!await _candidatesService.CandidateExistsAsync(id))
-            {
-                return NotFound();
-            }
-
-            await _candidatesService.DeleteCandidateAsync(id);
-
-            return NoContent();
+            var result = await _candidatesService.DeleteCandidateAsync(id);
+            return Ok(new ApiResult(result));
         }
     }
 }

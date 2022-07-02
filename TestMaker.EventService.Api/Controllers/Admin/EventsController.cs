@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TestMaker.Common.Models;
 using TestMaker.EventService.Domain.Models.Event;
 using TestMaker.EventService.Domain.Services;
 
@@ -19,22 +20,24 @@ namespace TestMaker.EventService.Api.Controllers.Admin
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetEvents([FromQuery] GetEventsFilter filter)
+        public async Task<ActionResult> GetEvents([FromQuery] GetEventsParams filter)
         {
-            return Ok(await _eventsService.GetEventsAsync(filter));
+            var result = await _eventsService.GetEventsAsync(new GetEventsParams
+            {
+                IsDeleted = filter.IsDeleted,
+                Page = filter.Page,
+                Take = filter.Take,
+            });
+
+            return Ok(new ApiResult<GetPaginationResult<EventForList>>(result));
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult> GetEvent(Guid id)
         {
-            var e = await _eventsService.GetEventAsync(id);
+            var result = await _eventsService.GetEventAsync(id);
 
-            if (e == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(e);
+            return Ok(new ApiResult<EventForDetails>(result));
         }
 
         [HttpPut("{id}")]
@@ -42,45 +45,26 @@ namespace TestMaker.EventService.Api.Controllers.Admin
         {
             if (id != e.EventId)
             {
-                return BadRequest();
+                return Ok(new ApiResult());
             }
 
-            try
-            {
-                await _eventsService.EditEventAsync(e);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _eventsService.EventExistsAsync(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            var result = await _eventsService.EditEventAsync(e);
 
-            return NoContent();
+            return Ok(new ApiResult<EventForDetails>(result));
         }
 
         [HttpPost]
         public async Task<ActionResult> PostEvent(EventForCreating e)
         {
-            return Ok(await _eventsService.CreateEventAsync(e));
+            var result = await _eventsService.CreateEventAsync(e);
+            return Ok(new ApiResult<EventForDetails>(result));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEvent(Guid id)
         {
-            if (!await _eventsService.EventExistsAsync(id))
-            {
-                return NotFound();
-            }
-
-            await _eventsService.DeleteEventAsync(id);
-
-            return NoContent();
+            var result = await _eventsService.DeleteEventAsync(id);
+            return Ok(new ApiResult(result));
         }
 
         [HttpGet("Type")]

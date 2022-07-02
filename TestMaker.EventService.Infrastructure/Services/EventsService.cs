@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using TestMaker.Common.Models;
 using TestMaker.EventService.Domain.Models;
 using TestMaker.EventService.Domain.Models.Event;
 using TestMaker.EventService.Domain.Services;
@@ -17,13 +19,11 @@ namespace TestMaker.EventService.Infrastructure.Services
 {
     public class EventsService : IEventsService
     {
-        private readonly ApplicationDbContext _dbContext;
         private readonly IEventsRepository _eventsRepository;
         private readonly IMapper _mapper;
 
-        public EventsService(ApplicationDbContext dbContext, IEventsRepository eventsRepository, IMapper mapper)
+        public EventsService(IEventsRepository eventsRepository, IMapper mapper)
         {
-            _dbContext = dbContext;
             _eventsRepository = eventsRepository;
             _mapper = mapper;
         }
@@ -38,83 +38,70 @@ namespace TestMaker.EventService.Infrastructure.Services
         #endregion
 
         #region Public
-        public async Task<EventForDetails> CreateEventAsync(EventForCreating e)
+        public async Task<ServiceResult<EventForDetails>> CreateEventAsync(EventForCreating e)
         {
             var entity = _mapper.Map<Event>(e);
             entity.Code = CreateCode(8);
-            _dbContext.Events.Add(entity);
-            await _dbContext.SaveChangesAsync();
+            await _eventsRepository.CreateAsync(entity);
 
             return await GetEventAsync(entity.EventId);
         }
 
-        public async Task DeleteEventAsync(Guid eventId)
+        public async Task<ServiceResult> DeleteEventAsync(Guid eventId)
         {
-            var entity = await _dbContext.Events.FindAsync(eventId);
-            if (entity != null && !entity.IsDeleted)
+            var entity = await _eventsRepository.GetAsync(eventId);
+            if (entity == null || entity.IsDeleted == true)
             {
-                entity.IsDeleted = true;
-                _dbContext.Entry(entity).State = EntityState.Modified;
-                var candidates = await _dbContext.Candidates.Where(x => x.EventId == eventId).ToListAsync();
-                foreach (var candidate in candidates)
-                {
-                    candidate.IsDeleted = true;
-                    _dbContext.Entry(candidate).State = EntityState.Modified;
-                }
-                await _dbContext.SaveChangesAsync();
+                return new ServiceNotFoundResult<EventForDetails>(eventId);
             }
+            entity.IsDeleted = true;
+            await EditEventAsync(_mapper.Map<EventForEditing>(entity));
+            return new ServiceResult();
         }
 
-        public async Task RestoreEventAsync(Guid eventId)
+        public async Task<ServiceResult<EventForDetails>> EditEventAsync(EventForEditing e)
         {
-            var entity = await _dbContext.Events.FindAsync(eventId);
-            if (entity != null && entity.IsDeleted)
+            var entity = _mapper.Map<Event>(e);
+
+            var result = await _eventsRepository.GetAsync(e.EventId);
+            if (result == null || result.IsDeleted == true)
             {
-                entity.IsDeleted = false;
-                _dbContext.Entry(entity).State = EntityState.Modified;
-                await _dbContext.SaveChangesAsync();
+                return new ServiceNotFoundResult<EventForDetails>(e.EventId);
             }
 
+            await _eventsRepository.UpdateAsync(entity);
+            return await GetEventAsync(e.EventId);
         }
 
-        public async Task EditEventAsync(EventForEditing e)
+        public async Task<ServiceResult<EventForDetails>> GetEventAsync(Guid eventId)
         {
-            var entity = await _dbContext.Events.FindAsync(e.EventId);
-
-            entity.EventId = e.EventId;
-            entity.Name = e.Name;
-            entity.Type = e.Type;
-            entity.TestId = e.TestId;
-
-            _dbContext.Entry(entity).State = EntityState.Modified;
-
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task<EventForDetails> GetEventAsync(Guid eventId)
-        {
-            var e = _dbContext.Events.SingleOrDefault(x => x.EventId == eventId);
+            var e = _eventsRepository.GetAsync(eventId);
 
             if (e == null)
-                return null;
+                return new ServiceNotFoundResult<EventForDetails>(eventId);
 
-            return await Task.FromResult(_mapper.Map<EventForDetails>(e));
+            return await Task.FromResult(new ServiceResult<EventForDetails>(_mapper.Map<EventForDetails>(e)));
         }
 
-        public async Task<IEnumerable<EventForList>> GetEventsAsync(GetEventsFilter getEventsParams)
+        public async Task<ServiceResult<GetPaginationResult<EventForList>>> GetEventsAsync(GetEventsParams getEventsParams)
         {
-            var query = _dbContext.Events.AsQueryable().Where(x => x.IsDeleted == getEventsParams.IsDeleted);
+            Expression<Func<Event, bool>> predicate = x => x.IsDeleted == getEventsParams.IsDeleted;
 
-            var events = query.ToList().Select(e => _mapper.Map<EventForList>(e));
-            return await Task.FromResult(events);
+            var quetsions = (await _eventsRepository.GetAsync(predicate, getEventsParams.Skip, getEventsParams.Take))
+                .Select(section => _mapper.Map<EventForList>(section));
+            var count = await _eventsRepository.CountAsync(predicate);
+            var result = new GetPaginationResult<EventForList>
+            {
+                Data = quetsions.ToList(),
+                Page = getEventsParams.Page,
+                Take = getEventsParams.Take,
+                TotalPage = count
+            };
+
+            return new ServiceResult<GetPaginationResult<EventForList>>(result);
         }
 
-        public async Task<bool> EventExistsAsync(Guid eventId)
-        {
-            return await _dbContext.Events.AnyAsync(e => e.EventId == eventId);
-        }
-
-        public async Task<IEnumerable<SelectOption<int>>> GetEventTypeAsSelectOptionsAsync()
+        public async Task<ServiceResult<IEnumerable<SelectOption<int>>>> GetEventTypeAsSelectOptionsAsync()
         {
             var result = new List<SelectOption<int>>();
             foreach (EventType value in Enum.GetValues(typeof(EventType)))
@@ -126,15 +113,15 @@ namespace TestMaker.EventService.Infrastructure.Services
                 });
             }
 
-            return await Task.FromResult(result);
+            return new ServiceResult<IEnumerable<SelectOption<int>>>(await Task.FromResult(result));
         }
 
-        public async Task<PreparedData> GetPreparedCandidateByCodeAsync(PrepareCode code)
+        public async Task<ServiceResult<PreparedData>> GetPreparedCandidateByCodeAsync(PrepareCode code)
         {
             var eventAndCandidate = await _eventsRepository.GetEventAndCandidateAsync(code.EventCode, code.CandidateCode);
 
             if (eventAndCandidate != null)
-                return new PreparedData
+                return new ServiceResult<PreparedData>(new PreparedData
                 {
                     EventId = eventAndCandidate.Event.EventId,
                     EventCode = eventAndCandidate.Event.Code,
@@ -142,11 +129,11 @@ namespace TestMaker.EventService.Infrastructure.Services
                     CandidateId = eventAndCandidate.Candidate.CandidateId,
                     CandidateCode = eventAndCandidate.Candidate.Code,
                     TestId = eventAndCandidate.Event.TestId
-                };
+                });
             return null;
         }
 
-        public async Task<List<PreparedData>> GetPublicEventsAndCandidatesAsync()
+        public async Task<ServiceResult<List<PreparedData>>> GetPublicEventsAndCandidatesAsync()
         {
             var eventsAndCandidates = await _eventsRepository.GetEventsAndCandidatesAsync(new EventsAndCandidatesParams
             {
@@ -154,7 +141,7 @@ namespace TestMaker.EventService.Infrastructure.Services
                 CandidateStatus = CandidateStatus.Open
             });
 
-            return eventsAndCandidates.Select(eventAndCandidate => new PreparedData
+            return new ServiceResult<List<PreparedData>>(eventsAndCandidates.Select(eventAndCandidate => new PreparedData
             {
                 EventId = eventAndCandidate.Event.EventId,
                 EventCode = eventAndCandidate.Event.Code,
@@ -162,7 +149,7 @@ namespace TestMaker.EventService.Infrastructure.Services
                 CandidateId = eventAndCandidate?.Candidate?.CandidateId ?? Guid.Empty,
                 CandidateCode = eventAndCandidate?.Candidate?.Code ?? string.Empty,
                 TestId = eventAndCandidate.Event.TestId
-            }).ToList();
+            }).ToList());
         }
 
         #endregion

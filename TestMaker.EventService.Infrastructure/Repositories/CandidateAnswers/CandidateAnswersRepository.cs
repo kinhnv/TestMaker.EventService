@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestMaker.Common.Repository;
 using TestMaker.EventService.Infrastructure.Entities;
-using TestMaker.EventService.Infrastructure.Repository;
 
 namespace TestMaker.EventService.Infrastructure.Repositories.CandidateAnswers
 {
@@ -16,21 +16,21 @@ namespace TestMaker.EventService.Infrastructure.Repositories.CandidateAnswers
 
         public async Task<CandidateAnswer> GetCandidateAnswerByCandidateIdAndQuestionIdAsync(Guid candidateId, Guid questionId)
         {
-            var candidateAnswer = _dbContext.CandidateAnswers.FirstOrDefault(ca => ca.CandidateId == candidateId && ca.QuestionId == questionId);
+            var candidateAnswer = _dbContext.Set<CandidateAnswer>().FirstOrDefault(ca => ca.CandidateId == candidateId && ca.QuestionId == questionId);
 
             return await Task.FromResult(candidateAnswer);
         }
 
         public async Task<List<CandidateAnswer>> GetCandidateAnswersByCandidateIdAsync(Guid candidateId)
         {
-            var candidateAnswers = _dbContext.CandidateAnswers.Where(ca => ca.CandidateId == candidateId).ToList();
+            var candidateAnswers = _dbContext.Set<CandidateAnswer>().Where(ca => ca.CandidateId == candidateId).ToList();
 
             return await Task.FromResult(candidateAnswers);
         }
 
         public async Task DeleteCandidateAnswersByCandidateIdAsync(Guid candidateId)
         {
-            var candidateAnswers = _dbContext.CandidateAnswers.Where(ca => ca.CandidateId == candidateId).ToList();
+            var candidateAnswers = _dbContext.Set<CandidateAnswer>().Where(ca => ca.CandidateId == candidateId).ToList();
 
             if (candidateAnswers.Any())
             {

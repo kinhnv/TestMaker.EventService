@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestMaker.Common.Models;
 using TestMaker.EventService.Domain.Models;
 using TestMaker.EventService.Domain.Models.Candidate;
 
@@ -10,26 +11,24 @@ namespace TestMaker.EventService.Domain.Services
 {
     public interface ICandidatesService
     {
-        Task<IEnumerable<CandidateForList>> GetCandidatesAsync(GetCandidatesFilter filter);
+        Task<ServiceResult<GetPaginationResult<CandidateForList>>> GetCandidatesAsync(GetCandidatesParams filter);
 
-        Task<CandidateForDetails> GetCandidateAsync(Guid candidateId);
+        Task<ServiceResult<CandidateForDetails>> GetCandidateAsync(Guid candidateId);
 
-        Task<CandidateForDetails> CreateCandidateAsync(CandidateForCreating candidate);
+        Task<ServiceResult<CandidateForDetails>> CreateCandidateAsync(CandidateForCreating candidate);
 
-        Task EditCandidateAsync(CandidateForEditing candidate);
+        Task<ServiceResult<CandidateForDetails>> EditCandidateAsync(CandidateForEditing candidate);
 
-        Task DeleteCandidateAsync(Guid candidateId);
+        Task<ServiceResult> DeleteCandidateAsync(Guid candidateId);
 
-        Task<bool> CandidateExistsAsync(Guid candidateId);
+        Task<ServiceResult<string>> GetAnswerAsync(Guid candidateId, Guid questionId);
 
-        Task<string> GetAnswerAsync(Guid candidateId, Guid questionId);
+        Task<ServiceResult<List<TestMaker.EventService.Domain.Models.CandidateAnswer>>> GetAnswersAsync(Guid candidateId);
 
-        Task<List<TestMaker.EventService.Domain.Models.CandidateAnswer>> GetAnswersAsync(Guid candidateId);
+        Task<ServiceResult> SubmitQuestionAsync(CandidateAnswerForSubmit answer);
 
-        Task SubmitQuestionAsync(CandidateAnswerForSubmit answer);
+        Task<ServiceResult> SubmitCandidateAsync(Guid candidateId);
 
-        Task SubmitCandidateAsync(Guid candidateId);
-
-        Task ClearAnswersOfCandidateAsync(Guid candidateId);
+        Task<ServiceResult> ClearAnswersOfCandidateAsync(Guid candidateId);
     }
 }
