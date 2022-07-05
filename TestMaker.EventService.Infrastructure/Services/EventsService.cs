@@ -75,7 +75,7 @@ namespace TestMaker.EventService.Infrastructure.Services
 
         public async Task<ServiceResult<EventForDetails>> GetEventAsync(Guid eventId)
         {
-            var e = _eventsRepository.GetAsync(eventId);
+            var e = await _eventsRepository.GetAsync(eventId);
 
             if (e == null)
                 return new ServiceNotFoundResult<EventForDetails>(eventId);
