@@ -33,7 +33,7 @@ namespace TestMaker.EventService.Infrastructure.Repositories.Events
             var events = _dbContext.Set<Event>().AsQueryable();
             if (p.Type != null)
             {
-                events = events.Where(e => e.Type == p.Type);
+                events = events.Where(e => e.ScopeType == p.Type);
             }
             var candidates = _dbContext.Set<Candidate>().AsQueryable();
             if (p.CandidateStatus != null)

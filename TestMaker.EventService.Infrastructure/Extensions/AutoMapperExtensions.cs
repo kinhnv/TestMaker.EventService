@@ -23,7 +23,7 @@ namespace TestMaker.EventService.Infrastructure.Extensions
             CreateMap<Event, EventForEditing>();
             CreateMap<Event, EventForList>()
                 .ForMember(eventForList => eventForList.Type, 
-                    option => option.MapFrom(e => e.TypeAsEnum.GetName())
+                    option => option.MapFrom(e => e.ScopeTypeAsEnum.GetName())
                 );
             CreateMap<Event, EventForDetails>();
 
