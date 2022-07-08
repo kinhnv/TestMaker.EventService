@@ -19,6 +19,6 @@ namespace TestMaker.EventService.Domain.Models.Event
 
         public string ScopeType { get; set; }
 
-        public string ContentType { get; set; }
+        public int QuestionContentType { get; set; }
     }
 }

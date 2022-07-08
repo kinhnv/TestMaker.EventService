@@ -22,7 +22,7 @@ namespace TestMaker.EventService.Domain.Models.Event
         public int ScopeType { get; set; }
 
         [Required]
-        public int ContentType { get; set; }
+        public int QuestionContentType { get; set; }
 
         [Required]
         public Guid TestId { get; set; }

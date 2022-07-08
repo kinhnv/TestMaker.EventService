@@ -63,12 +63,13 @@ namespace TestMaker.EventService.Infrastructure.Services
         {
             var entity = _mapper.Map<Event>(e);
 
-            var result = await _eventsRepository.GetAsync(e.EventId);
+            var result = await _eventsRepository.GetAsync(e.EventId, true);
             if (result == null || result.IsDeleted == true)
             {
                 return new ServiceNotFoundResult<EventForDetails>(e.EventId);
             }
 
+            entity.Code = result.Code;
             await _eventsRepository.UpdateAsync(entity);
             return await GetEventAsync(e.EventId);
         }
