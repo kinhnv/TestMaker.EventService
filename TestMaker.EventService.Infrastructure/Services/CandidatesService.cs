@@ -35,7 +35,7 @@ namespace TestMaker.EventService.Infrastructure.Services
         {
             var entity = _mapper.Map<Candidate>(candidate);
 
-            var result = await _candidatesRepository.CreateAsync(entity);
+            await _candidatesRepository.CreateAsync(entity);
 
             return await GetCandidateAsync(entity.CandidateId);
         }
