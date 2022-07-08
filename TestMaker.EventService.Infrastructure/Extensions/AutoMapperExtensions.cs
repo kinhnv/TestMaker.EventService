@@ -22,8 +22,11 @@ namespace TestMaker.EventService.Infrastructure.Extensions
             CreateMap<EventForEditing, Event>();
             CreateMap<Event, EventForEditing>();
             CreateMap<Event, EventForList>()
-                .ForMember(eventForList => eventForList.Type, 
-                    option => option.MapFrom(e => e.TypeAsEnum.GetName())
+                .ForMember(eventForList => eventForList.ScopeType, 
+                    option => option.MapFrom(e => e.ScopeTypeAsEnum.GetName())
+                )
+                .ForMember(eventForList => eventForList.QuestionContentType, 
+                    option => option.MapFrom(e => e.QuestionContentTypeAsEnum.GetName())
                 );
             CreateMap<Event, EventForDetails>();
 

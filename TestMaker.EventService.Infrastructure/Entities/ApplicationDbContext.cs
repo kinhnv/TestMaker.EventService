@@ -22,7 +22,7 @@ namespace TestMaker.EventService.Infrastructure.Entities
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Event>().HasKey(e => e.EventId);
-            modelBuilder.Entity<Event>().Property(e => e.Type).HasDefaultValue((int)EventType.Private);
+            modelBuilder.Entity<Event>().Property(e => e.ScopeType).HasDefaultValue((int)EventScopeType.Private);
             modelBuilder.Entity<Event>().Property(e => e.IsDeleted).HasDefaultValue(false);
 
             modelBuilder.Entity<Candidate>().HasKey(c => c.CandidateId);

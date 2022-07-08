@@ -63,12 +63,13 @@ namespace TestMaker.EventService.Infrastructure.Services
         {
             var entity = _mapper.Map<Event>(e);
 
-            var result = await _eventsRepository.GetAsync(e.EventId);
+            var result = await _eventsRepository.GetAsync(e.EventId, true);
             if (result == null || result.IsDeleted == true)
             {
                 return new ServiceNotFoundResult<EventForDetails>(e.EventId);
             }
 
+            entity.Code = result.Code;
             await _eventsRepository.UpdateAsync(entity);
             return await GetEventAsync(e.EventId);
         }
@@ -101,10 +102,25 @@ namespace TestMaker.EventService.Infrastructure.Services
             return new ServiceResult<GetPaginationResult<EventForList>>(result);
         }
 
-        public async Task<ServiceResult<IEnumerable<SelectOption<int>>>> GetEventTypeAsSelectOptionsAsync()
+        public async Task<ServiceResult<IEnumerable<SelectOption<int>>>> GetEventScopeTypeAsSelectOptionsAsync()
         {
             var result = new List<SelectOption<int>>();
-            foreach (EventType value in Enum.GetValues(typeof(EventType)))
+            foreach (EventScopeType value in Enum.GetValues(typeof(EventScopeType)))
+            {
+                result.Add(new SelectOption<int>
+                {
+                    Title = value.GetName(),
+                    Value = (int)value,
+                });
+            }
+
+            return new ServiceResult<IEnumerable<SelectOption<int>>>(await Task.FromResult(result));
+        }
+
+        public async Task<ServiceResult<IEnumerable<SelectOption<int>>>> GetEventContentTypeAsSelectOptionsAsync()
+        {
+            var result = new List<SelectOption<int>>();
+            foreach (EventContentType value in Enum.GetValues(typeof(EventContentType)))
             {
                 result.Add(new SelectOption<int>
                 {
@@ -125,7 +141,7 @@ namespace TestMaker.EventService.Infrastructure.Services
                 {
                     EventId = eventAndCandidate.Event.EventId,
                     EventCode = eventAndCandidate.Event.Code,
-                    EventType = eventAndCandidate.Event.Type,
+                    EventType = eventAndCandidate.Event.ScopeType,
                     CandidateId = eventAndCandidate.Candidate.CandidateId,
                     CandidateCode = eventAndCandidate.Candidate.Code,
                     TestId = eventAndCandidate.Event.TestId
@@ -137,7 +153,7 @@ namespace TestMaker.EventService.Infrastructure.Services
         {
             var eventsAndCandidates = await _eventsRepository.GetEventsAndCandidatesAsync(new EventsAndCandidatesParams
             {
-                Type = (int)EventType.Public,
+                Type = (int)EventScopeType.Public,
                 CandidateStatus = CandidateStatus.Open
             });
 
@@ -145,7 +161,7 @@ namespace TestMaker.EventService.Infrastructure.Services
             {
                 EventId = eventAndCandidate.Event.EventId,
                 EventCode = eventAndCandidate.Event.Code,
-                EventType = eventAndCandidate.Event.Type,
+                EventType = eventAndCandidate.Event.ScopeType,
                 CandidateId = eventAndCandidate?.Candidate?.CandidateId ?? Guid.Empty,
                 CandidateCode = eventAndCandidate?.Candidate?.Code ?? string.Empty,
                 TestId = eventAndCandidate.Event.TestId

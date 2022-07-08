@@ -53,7 +53,7 @@ namespace TestMaker.Api
                 });
             }
 
-            services.AddTransient();
+            services.AddTransientInfrastructure();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

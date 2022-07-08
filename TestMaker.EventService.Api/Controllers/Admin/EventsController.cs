@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TestMaker.Common.Models;
+using TestMaker.EventService.Domain.Models;
 using TestMaker.EventService.Domain.Models.Event;
 using TestMaker.EventService.Domain.Services;
 
@@ -67,11 +69,20 @@ namespace TestMaker.EventService.Api.Controllers.Admin
             return Ok(new ApiResult(result));
         }
 
-        [HttpGet("Type")]
-        public async Task<IActionResult> GetEventTypeAsSelectOptions()
+        [HttpGet]
+        [Route("ScopeType")]
+        public async Task<IActionResult> GetScopeTypeAsSelectOptions()
         {
-            var result = await _eventsService.GetEventTypeAsSelectOptionsAsync();
-            return Ok(result);
+            var result = await _eventsService.GetEventScopeTypeAsSelectOptionsAsync();
+            return Ok(new ApiResult<IEnumerable<SelectOption<int>>>(result));
+        }
+
+        [HttpGet]
+        [Route("ContentType")]
+        public async Task<IActionResult> GetContentTypeAsSelectOptions()
+        {
+            var result = await _eventsService.GetEventContentTypeAsSelectOptionsAsync();
+            return Ok(new ApiResult<IEnumerable<SelectOption<int>>>(result));
         }
     }
 }
