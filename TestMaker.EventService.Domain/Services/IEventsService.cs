@@ -21,8 +21,10 @@ namespace TestMaker.EventService.Domain.Services
 
         Task<ServiceResult> DeleteEventAsync(Guid eventId);
 
-        Task<ServiceResult<IEnumerable<SelectOption<int>>>> GetEventTypeAsSelectOptionsAsync();
+        Task<ServiceResult<IEnumerable<SelectOption<int>>>> GetEventScopeTypeAsSelectOptionsAsync();
 
+        Task<ServiceResult<IEnumerable<SelectOption<int>>>> GetEventContentTypeAsSelectOptionsAsync();
+ 
         Task<ServiceResult<PreparedData>> GetPreparedCandidateByCodeAsync(PrepareCode code);
 
         Task<ServiceResult<List<PreparedData>>> GetPublicEventsAndCandidatesAsync();
