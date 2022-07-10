@@ -34,6 +34,10 @@ namespace TestMaker.EventService.Infrastructure.Services
         public async Task<ServiceResult<CandidateForDetails>> CreateCandidateAsync(CandidateForCreating candidate)
         {
             var entity = _mapper.Map<Candidate>(candidate);
+            entity.Code = CreateCode(8);
+            entity.IsDeleted = false;
+            entity.CreatedAt = DateTime.UtcNow.AddHours(7);
+            entity.Status = (int)CandidateStatus.Open;
 
             await _candidatesRepository.CreateAsync(entity);
 
@@ -106,7 +110,7 @@ namespace TestMaker.EventService.Infrastructure.Services
         {
             var result = await _candidateAnswersRepository.GetCandidateAnswerByCandidateIdAndQuestionIdAsync(candidateId, questionId);
 
-            return new ServiceResult<string>(result?.AnswerAsJson ?? String.Empty);
+            return new ServiceResult<string>() { Data = result?.AnswerAsJson ?? String.Empty };
         }
 
         public async Task<ServiceResult<List<TestMaker.EventService.Domain.Models.CandidateAnswer>>> GetAnswersAsync(Guid candidateId)

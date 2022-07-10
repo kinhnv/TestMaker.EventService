@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using TestMaker.Common.Models;
 using TestMaker.EventService.Domain.Models;
 using TestMaker.EventService.Domain.Services;
 
@@ -26,14 +27,15 @@ namespace TestMaker.EventService.Api.Controllers
         {
             var result = await _eventsService.GetPreparedCandidateByCodeAsync(code);
 
-            return Ok(result);
+            return Ok(new ApiResult<PreparedData>(result));
         }
 
         [HttpGet]
         [Route("GetPublicEventsAndCandidates")]
         public async Task<IActionResult> GetPublicEventsAndCandidatesAsync()
         {
-            return Ok(await _eventsService.GetPublicEventsAndCandidatesAsync());
+            var result = await _eventsService.GetPublicEventsAndCandidatesAsync();
+            return Ok(new ApiResult<List<PreparedData>>(result));
         }
 
         [HttpPost]
@@ -44,7 +46,7 @@ namespace TestMaker.EventService.Api.Controllers
             {
                 EventId = eventId
             });
-            return Ok();
+            return Ok(new ApiResult());
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using TestMaker.Common.Models;
 using TestMaker.EventService.Domain.Models;
 using TestMaker.EventService.Domain.Services;
 
@@ -21,38 +22,40 @@ namespace TestMaker.EventService.Api.Controllers
         [Route("GetAnswer")]
         public async Task<IActionResult> GetAnswerAsync(Guid candidateId, Guid questionId)
         {
-            return Ok(await _candidatesService.GetAnswerAsync(candidateId, questionId));
+            var result = await _candidatesService.GetAnswerAsync(candidateId, questionId);
+            return Ok(new ApiResult<string>(result));
         }
 
         [HttpGet]
         [Route("GetAnswers")]
         public async Task<IActionResult> GetAnswersAsync(Guid candidateId)
         {
-            return Ok(await _candidatesService.GetAnswersAsync(candidateId));
+            var result = await _candidatesService.GetAnswersAsync(candidateId);
+            return Ok(new ApiResult<List<TestMaker.EventService.Domain.Models.CandidateAnswer>>(result));
         }
 
         [HttpPost]
         [Route("SubmitQuestion")]
         public async Task<IActionResult> SubmitQuestionAsync(CandidateAnswerForSubmit answer)
         {
-            await _candidatesService.SubmitQuestionAsync(answer);
-            return Ok();
+            var result = await _candidatesService.SubmitQuestionAsync(answer);
+            return Ok(new ApiResult(result));
         }
 
         [HttpPost]
         [Route("Submit")]
         public async Task<IActionResult> SubmitCandidateAsync(Guid candidateId)
         {
-            await _candidatesService.SubmitCandidateAsync(candidateId);
-            return Ok();
+            var result = await _candidatesService.SubmitCandidateAsync(candidateId);
+            return Ok(new ApiResult(result));
         }
 
         [HttpPost]
         [Route("Clear")]
         public async Task<IActionResult> ClearAsync(Guid candidateId)
         {
-            await _candidatesService.ClearAnswersOfCandidateAsync(candidateId);
-            return Ok();
+            var result = await _candidatesService.ClearAnswersOfCandidateAsync(candidateId);
+            return Ok(new ApiResult(result));
         }
     }
 }

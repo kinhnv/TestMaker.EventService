@@ -141,7 +141,8 @@ namespace TestMaker.EventService.Infrastructure.Services
                 {
                     EventId = eventAndCandidate.Event.EventId,
                     EventCode = eventAndCandidate.Event.Code,
-                    EventType = eventAndCandidate.Event.ScopeType,
+                    EventScopeType = eventAndCandidate.Event.ScopeType,
+                    EventContentQuestionType = eventAndCandidate.Event.QuestionContentType,
                     CandidateId = eventAndCandidate.Candidate.CandidateId,
                     CandidateCode = eventAndCandidate.Candidate.Code,
                     TestId = eventAndCandidate.Event.TestId
@@ -161,7 +162,9 @@ namespace TestMaker.EventService.Infrastructure.Services
             {
                 EventId = eventAndCandidate.Event.EventId,
                 EventCode = eventAndCandidate.Event.Code,
-                EventType = eventAndCandidate.Event.ScopeType,
+                EventName = eventAndCandidate.Event.Name,
+                EventScopeType = eventAndCandidate.Event.ScopeType,
+                EventContentQuestionType = eventAndCandidate.Event.QuestionContentType,
                 CandidateId = eventAndCandidate?.Candidate?.CandidateId ?? Guid.Empty,
                 CandidateCode = eventAndCandidate?.Candidate?.Code ?? string.Empty,
                 TestId = eventAndCandidate.Event.TestId
