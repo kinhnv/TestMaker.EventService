@@ -3,6 +3,7 @@ using System;
 using System.Threading.Tasks;
 using TestMaker.Common.Models;
 using TestMaker.EventService.Domain.Models;
+using TestMaker.EventService.Domain.Models.Candidate;
 using TestMaker.EventService.Domain.Services;
 
 namespace TestMaker.EventService.Api.Controllers
@@ -55,6 +56,22 @@ namespace TestMaker.EventService.Api.Controllers
         public async Task<IActionResult> ClearAsync(Guid candidateId)
         {
             var result = await _candidatesService.ClearAnswersOfCandidateAsync(candidateId);
+            return Ok(new ApiResult(result));
+        }
+
+        [HttpPost]
+        [Route("CreatePreparedTestTemp")]
+        public async Task<IActionResult> CreatePreparedTestTempAsync([FromQuery]Guid candidateId, [FromBody]PreparedTest preparedTest)
+        {
+            var result = await _candidatesService.CreatePreparedTestTempAsync(candidateId, preparedTest);
+            return Ok(new ApiResult(result));
+        }
+
+        [HttpGet]
+        [Route("GetPreparedTestTemp")]
+        public async Task<IActionResult> GetPreparedTestTempAsync(Guid candidateId)
+        {
+            var result = await _candidatesService.GetPreparedTestTempAsync(candidateId);
             return Ok(new ApiResult(result));
         }
     }

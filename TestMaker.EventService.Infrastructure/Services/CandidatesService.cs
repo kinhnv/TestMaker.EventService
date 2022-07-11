@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ using TestMaker.EventService.Domain.Models;
 using TestMaker.EventService.Domain.Models.Candidate;
 using TestMaker.EventService.Domain.Services;
 using TestMaker.EventService.Infrastructure.Entities;
+using TestMaker.EventService.Infrastructure.MongoEntities;
 using TestMaker.EventService.Infrastructure.Repositories.CandidateAnswers;
 using TestMaker.EventService.Infrastructure.Repositories.Candidates;
 
@@ -19,16 +21,19 @@ namespace TestMaker.EventService.Infrastructure.Services
     {
         private readonly ICandidatesRepository _candidatesRepository;
         private readonly ICandidateAnswersRepository _candidateAnswersRepository;
+        private readonly ICandidatePreparedTestTempsRepository _candidatePreparedTestTempsRepository;
         private readonly IMapper _mapper;
 
         public CandidatesService(
-            ICandidatesRepository candidatesRepository, 
-            ICandidateAnswersRepository candidateAnswersRepository, 
-            IMapper mapper)
+            ICandidatesRepository candidatesRepository,
+            ICandidateAnswersRepository candidateAnswersRepository,
+            IMapper mapper,
+            ICandidatePreparedTestTempsRepository candidatePreparedTestTempsRepository)
         {
             _candidatesRepository = candidatesRepository;
             _candidateAnswersRepository = candidateAnswersRepository;
             _mapper = mapper;
+            _candidatePreparedTestTempsRepository = candidatePreparedTestTempsRepository;
         }
 
         public async Task<ServiceResult<CandidateForDetails>> CreateCandidateAsync(CandidateForCreating candidate)
@@ -164,6 +169,31 @@ namespace TestMaker.EventService.Infrastructure.Services
         {
             await _candidateAnswersRepository.DeleteCandidateAnswersByCandidateIdAsync(candidateId);
             return new ServiceResult();
+        }
+
+        public async Task<ServiceResult> CreatePreparedTestTempAsync(Guid candidateId, PreparedTest preparedTest)
+        {
+            await _candidatePreparedTestTempsRepository.CreateAsync(new MongoEntities.CandidatePreparedTestTemp
+            {
+                CandidateId = candidateId,
+                PreparedTest = preparedTest
+            });
+
+            return new ServiceResult();
+        } 
+
+        public async Task<ServiceResult<PreparedTest>> GetPreparedTestTempAsync(Guid candidateId)
+        {
+            var temps = await _candidatePreparedTestTempsRepository.GetAsync(Builders<CandidatePreparedTestTemp>.Filter.Eq(x => x.CandidateId, candidateId));
+            if (!(temps?.Count > 0))
+            {
+                return new ServiceNotFoundResult<PreparedTest>(candidateId);
+            }
+            if (temps?.Count > 1)
+            {
+                return new ServiceResult<PreparedTest>($"There are more than one prepared test with candidateid {candidateId}");
+            }
+            return new ServiceResult<PreparedTest>(temps.Single().PreparedTest);
         }
     }
 }
