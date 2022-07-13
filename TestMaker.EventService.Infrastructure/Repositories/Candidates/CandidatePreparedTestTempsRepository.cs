@@ -10,7 +10,7 @@ namespace TestMaker.EventService.Infrastructure.Repositories.Candidates
 {
     public class CandidatePreparedTestTempsRepository : MongoRepository<CandidatePreparedTestTemp>, ICandidatePreparedTestTempsRepository
     {
-        protected CandidatePreparedTestTempsRepository(IMongoContext context) : base(context)
+        public CandidatePreparedTestTempsRepository(IMongoContext context) : base(context)
         {
         }
     }

@@ -61,7 +61,7 @@ namespace TestMaker.EventService.Api.Controllers
 
         [HttpPost]
         [Route("CreatePreparedTestTemp")]
-        public async Task<IActionResult> CreatePreparedTestTempAsync([FromQuery]Guid candidateId, [FromBody]PreparedTest preparedTest)
+        public async Task<IActionResult> CreatePreparedTestTempAsync([FromQuery]Guid candidateId, PreparedTest preparedTest)
         {
             var result = await _candidatesService.CreatePreparedTestTempAsync(candidateId, preparedTest);
             return Ok(new ApiResult(result));
@@ -72,7 +72,7 @@ namespace TestMaker.EventService.Api.Controllers
         public async Task<IActionResult> GetPreparedTestTempAsync(Guid candidateId)
         {
             var result = await _candidatesService.GetPreparedTestTempAsync(candidateId);
-            return Ok(new ApiResult(result));
+            return Ok(new ApiResult<PreparedTest>(result));
         }
     }
 }
