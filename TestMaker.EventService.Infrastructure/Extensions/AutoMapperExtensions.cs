@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using TestMaker.Common.Extensions;
 using TestMaker.EventService.Domain.Models.Candidate;
 using TestMaker.EventService.Domain.Models.Event;
 using TestMaker.EventService.Infrastructure.Entities;
@@ -23,10 +24,10 @@ namespace TestMaker.EventService.Infrastructure.Extensions
             CreateMap<Event, EventForEditing>();
             CreateMap<Event, EventForList>()
                 .ForMember(eventForList => eventForList.ScopeType, 
-                    option => option.MapFrom(e => e.ScopeTypeAsEnum.GetName())
+                    option => option.MapFrom(e => e.ScopeTypeAsEnum.GetEnumName())
                 )
                 .ForMember(eventForList => eventForList.QuestionContentType, 
-                    option => option.MapFrom(e => e.QuestionContentTypeAsEnum.GetName())
+                    option => option.MapFrom(e => e.QuestionContentTypeAsEnum.GetEnumName())
                 );
             CreateMap<Event, EventForDetails>();
 

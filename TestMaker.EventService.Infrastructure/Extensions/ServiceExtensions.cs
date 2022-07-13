@@ -16,6 +16,7 @@ namespace TestMaker.EventService.Infrastructure.Extensions
             service.AddTransient<IEventsRepository, EventsRepository>();
             service.AddTransient<ICandidatesRepository, CandidatesRepository>();
             service.AddTransient<ICandidateAnswersRepository, CandidateAnswersRepository>();
+            service.AddTransient<ICandidatePreparedTestTempsRepository, CandidatePreparedTestTempsRepository>();
 
             service.AddTransient<IEventsService, EventsService>();
             service.AddTransient<ICandidatesService, CandidatesService>();

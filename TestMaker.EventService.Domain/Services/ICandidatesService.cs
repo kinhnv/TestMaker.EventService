@@ -30,5 +30,9 @@ namespace TestMaker.EventService.Domain.Services
         Task<ServiceResult> SubmitCandidateAsync(Guid candidateId);
 
         Task<ServiceResult> ClearAnswersOfCandidateAsync(Guid candidateId);
+
+        Task<ServiceResult> CreatePreparedTestTempAsync(Guid candidateId, PreparedTest preparedTest);
+
+        Task<ServiceResult<PreparedTest>> GetPreparedTestTempAsync(Guid candidateId);
     }
 }

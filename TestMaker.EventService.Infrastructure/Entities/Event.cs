@@ -5,32 +5,32 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestMaker.Common.Attributes;
 using TestMaker.Common.Repository;
-using TestMaker.EventService.Infrastructure.Attributes;
 
 namespace TestMaker.EventService.Infrastructure.Entities
 {
     public enum EventScopeType
     {
-        [Name("Bảo mật")]
+        [EnumName("Bảo mật")]
         Private = 0,
-        [Name("Công khai")]
+        [EnumName("Công khai")]
         Public = 1,
-        [Name("Công khai với một vài người dùng")]
+        [EnumName("Công khai với một vài người dùng")]
         Protected = 3
     }
 
-    public enum EventContentType
+    public enum EventQuestionContentType
     {
-        [Name("Nguyên bản")]
+        [EnumName("Nguyên bản")]
         Origin = 0,
-        [Name("Đổi vị trí câu hỏi")]
+        [EnumName("Đổi vị trí câu hỏi")]
         RandomAll = 1,
-        [Name("Chọn x phần trăm câu hỏi")]
+        [EnumName("Chọn x phần trăm câu hỏi")]
         RandomWithPercent = 2,
-        [Name("Chọn x câu hỏi")]
+        [EnumName("Chọn x câu hỏi")]
         RandomWithConstant = 3,
-        [Name("Chọn câu hỏi thông minh")]
+        [EnumName("Chọn câu hỏi thông minh")]
         SmartRandom = 4
     }
 
@@ -59,9 +59,9 @@ namespace TestMaker.EventService.Infrastructure.Entities
         public int ScopeType { get; set; }
 
         [NotMapped]
-        public EventContentType QuestionContentTypeAsEnum
+        public EventQuestionContentType QuestionContentTypeAsEnum
         {
-            get { return (EventContentType)QuestionContentType; }
+            get { return (EventQuestionContentType)QuestionContentType; }
             set { QuestionContentType = (int)value; }
         }
 
