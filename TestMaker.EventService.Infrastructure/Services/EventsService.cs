@@ -6,11 +6,11 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using TestMaker.Common.Extensions;
 using TestMaker.Common.Models;
 using TestMaker.EventService.Domain.Models;
 using TestMaker.EventService.Domain.Models.Event;
 using TestMaker.EventService.Domain.Services;
-using TestMaker.EventService.Infrastructure.Attributes;
 using TestMaker.EventService.Infrastructure.Entities;
 using TestMaker.EventService.Infrastructure.Extensions;
 using TestMaker.EventService.Infrastructure.Repositories.Events;
@@ -109,7 +109,7 @@ namespace TestMaker.EventService.Infrastructure.Services
             {
                 result.Add(new SelectOption<int>
                 {
-                    Title = value.GetName(),
+                    Title = value.GetEnumName(),
                     Value = (int)value,
                 });
             }
@@ -120,11 +120,11 @@ namespace TestMaker.EventService.Infrastructure.Services
         public async Task<ServiceResult<IEnumerable<SelectOption<int>>>> GetEventContentTypeAsSelectOptionsAsync()
         {
             var result = new List<SelectOption<int>>();
-            foreach (EventContentType value in Enum.GetValues(typeof(EventContentType)))
+            foreach (EventQuestionContentType value in Enum.GetValues(typeof(EventQuestionContentType)))
             {
                 result.Add(new SelectOption<int>
                 {
-                    Title = value.GetName(),
+                    Title = value.GetEnumName(),
                     Value = (int)value,
                 });
             }
