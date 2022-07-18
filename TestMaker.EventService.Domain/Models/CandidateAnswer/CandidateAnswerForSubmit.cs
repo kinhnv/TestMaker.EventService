@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestMaker.EventService.Domain.Models
+namespace TestMaker.EventService.Domain.Models.CandidateAnswer
 {
     public class CandidateAnswerForSubmit
     {

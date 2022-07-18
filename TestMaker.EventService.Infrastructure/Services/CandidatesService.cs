@@ -7,8 +7,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using TestMaker.Common.Models;
-using TestMaker.EventService.Domain.Models;
 using TestMaker.EventService.Domain.Models.Candidate;
+using TestMaker.EventService.Domain.Models.CandidateAnswer;
 using TestMaker.EventService.Domain.Services;
 using TestMaker.EventService.Infrastructure.Entities;
 using TestMaker.EventService.Infrastructure.MongoEntities;
@@ -111,27 +111,49 @@ namespace TestMaker.EventService.Infrastructure.Services
                 .Select(s => s[new Random().Next(s.Length)]).ToArray());
         }
 
-        public async Task<ServiceResult<string>> GetAnswerAsync(Guid candidateId, Guid questionId)
+        public async Task<ServiceResult<Domain.Models.CandidateAnswer.CandidateAnswer>> GetAnswerAsync(Guid candidateId, Guid questionId)
         {
             var result = await _candidateAnswersRepository.GetCandidateAnswerByCandidateIdAndQuestionIdAsync(candidateId, questionId);
 
-            return new ServiceResult<string>() { Data = result?.AnswerAsJson ?? String.Empty };
+            if (result == null)
+            {
+                return new ServiceResult<Domain.Models.CandidateAnswer.CandidateAnswer>()
+                {
+                    Data = new Domain.Models.CandidateAnswer.CandidateAnswer
+                    {
+                        QuestionId = questionId,
+                        AnswerAsJson = String.Empty,
+                        Status = (int)CandidateAnswerStatus.Unseen
+                    }
+                };
+            }
+
+            return new ServiceResult<Domain.Models.CandidateAnswer.CandidateAnswer>()
+            {
+                Data = new Domain.Models.CandidateAnswer.CandidateAnswer
+                {
+                    QuestionId = questionId,
+                    AnswerAsJson = result.AnswerAsJson,
+                    Status = result.Status
+                }
+            };
         }
 
-        public async Task<ServiceResult<List<TestMaker.EventService.Domain.Models.CandidateAnswer>>> GetAnswersAsync(Guid candidateId)
+        public async Task<ServiceResult<List<Domain.Models.CandidateAnswer.CandidateAnswer>>> GetAnswersAsync(Guid candidateId)
         {
             var data = await _candidateAnswersRepository.GetCandidateAnswersByCandidateIdAsync(candidateId);
 
             if (data != null)
             {
-                return new ServiceResult<List<TestMaker.EventService.Domain.Models.CandidateAnswer>>(data.Select(ca => new TestMaker.EventService.Domain.Models.CandidateAnswer
+                return new ServiceResult<List<Domain.Models.CandidateAnswer.CandidateAnswer>>(data.Select(ca => new TestMaker.EventService.Domain.Models.CandidateAnswer.CandidateAnswer
                 {
                     AnswerAsJson = ca.AnswerAsJson,
                     QuestionId = ca.QuestionId,
+                    Status = ca.Status
                 }).ToList());
             }
 
-            return new ServiceResult<List<TestMaker.EventService.Domain.Models.CandidateAnswer>>(new List<Domain.Models.CandidateAnswer>());
+            return new ServiceResult<List<Domain.Models.CandidateAnswer.CandidateAnswer>>(new List<Domain.Models.CandidateAnswer.CandidateAnswer>());
         }
 
         public async Task<ServiceResult> SubmitQuestionAsync(CandidateAnswerForSubmit answer)
@@ -180,7 +202,7 @@ namespace TestMaker.EventService.Infrastructure.Services
             });
 
             return new ServiceResult();
-        } 
+        }
 
         public async Task<ServiceResult<PreparedTest>> GetPreparedTestTempAsync(Guid candidateId)
         {

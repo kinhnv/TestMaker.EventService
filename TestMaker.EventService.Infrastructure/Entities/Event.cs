@@ -7,33 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using TestMaker.Common.Attributes;
 using TestMaker.Common.Repository;
+using TestMaker.EventService.Domain.Models.Event;
 
 namespace TestMaker.EventService.Infrastructure.Entities
 {
-    public enum EventScopeType
-    {
-        [EnumName("Bảo mật")]
-        Private = 0,
-        [EnumName("Công khai")]
-        Public = 1,
-        [EnumName("Công khai với một vài người dùng")]
-        Protected = 3
-    }
-
-    public enum EventQuestionContentType
-    {
-        [EnumName("Nguyên bản")]
-        Origin = 0,
-        [EnumName("Đổi vị trí câu hỏi")]
-        RandomAll = 1,
-        [EnumName("Chọn x phần trăm câu hỏi")]
-        RandomWithPercent = 2,
-        [EnumName("Chọn x câu hỏi")]
-        RandomWithConstant = 3,
-        [EnumName("Chọn câu hỏi thông minh")]
-        SmartRandom = 4
-    }
-
     public class Event : Entity
     {
         [Key]
@@ -67,6 +44,16 @@ namespace TestMaker.EventService.Infrastructure.Entities
 
         [Required]
         public int QuestionContentType { get; set; }
+
+        [NotMapped]
+        public EventMarkingType MarkingTypeAsEnum
+        {
+            get { return (EventMarkingType)MarkingType; }
+            set { MarkingType = (int)value; }
+        }
+
+        [Required]
+        public int MarkingType { get; set; }
 
         [Required]
         public Guid TestId { get; set; }

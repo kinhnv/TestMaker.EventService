@@ -23,8 +23,10 @@ namespace TestMaker.EventService.Domain.Services
 
         Task<ServiceResult<IEnumerable<SelectOption<int>>>> GetEventScopeTypeAsSelectOptionsAsync();
 
-        Task<ServiceResult<IEnumerable<SelectOption<int>>>> GetEventContentTypeAsSelectOptionsAsync();
- 
+        Task<ServiceResult<IEnumerable<SelectOption<int>>>> GetEventQuestionContentTypeAsSelectOptionsAsync();
+
+        Task<ServiceResult<IEnumerable<SelectOption<int>>>> GetEventMarkingTypeAsSelectOptionsAsync();
+
         Task<ServiceResult<PreparedData>> GetPreparedCandidateByCodeAsync(PrepareCode code);
 
         Task<ServiceResult<List<PreparedData>>> GetPublicEventsAndCandidatesAsync();

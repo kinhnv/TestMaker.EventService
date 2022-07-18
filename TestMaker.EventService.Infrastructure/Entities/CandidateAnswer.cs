@@ -19,5 +19,7 @@ namespace TestMaker.EventService.Infrastructure.Entities
 
         [Required]
         public string AnswerAsJson { get; set; }
+
+        public int Status { get; set; }
     }
 }

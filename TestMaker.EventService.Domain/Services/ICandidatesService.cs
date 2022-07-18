@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestMaker.Common.Models;
-using TestMaker.EventService.Domain.Models;
 using TestMaker.EventService.Domain.Models.Candidate;
+using TestMaker.EventService.Domain.Models.CandidateAnswer;
 
 namespace TestMaker.EventService.Domain.Services
 {
@@ -21,9 +21,9 @@ namespace TestMaker.EventService.Domain.Services
 
         Task<ServiceResult> DeleteCandidateAsync(Guid candidateId);
 
-        Task<ServiceResult<string>> GetAnswerAsync(Guid candidateId, Guid questionId);
+        Task<ServiceResult<CandidateAnswer>> GetAnswerAsync(Guid candidateId, Guid questionId);
 
-        Task<ServiceResult<List<TestMaker.EventService.Domain.Models.CandidateAnswer>>> GetAnswersAsync(Guid candidateId);
+        Task<ServiceResult<List<CandidateAnswer>>> GetAnswersAsync(Guid candidateId);
 
         Task<ServiceResult> SubmitQuestionAsync(CandidateAnswerForSubmit answer);
 
