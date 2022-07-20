@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using TestMaker.Common.Extensions;
 using TestMaker.Common.Models;
 using TestMaker.EventService.Domain.Models;
+using TestMaker.EventService.Domain.Models.Candidate;
 using TestMaker.EventService.Domain.Models.Event;
 using TestMaker.EventService.Domain.Services;
 using TestMaker.EventService.Infrastructure.Entities;
@@ -117,10 +118,25 @@ namespace TestMaker.EventService.Infrastructure.Services
             return new ServiceResult<IEnumerable<SelectOption<int>>>(await Task.FromResult(result));
         }
 
-        public async Task<ServiceResult<IEnumerable<SelectOption<int>>>> GetEventContentTypeAsSelectOptionsAsync()
+        public async Task<ServiceResult<IEnumerable<SelectOption<int>>>> GetEventQuestionContentTypeAsSelectOptionsAsync()
         {
             var result = new List<SelectOption<int>>();
             foreach (EventQuestionContentType value in Enum.GetValues(typeof(EventQuestionContentType)))
+            {
+                result.Add(new SelectOption<int>
+                {
+                    Title = value.GetEnumName(),
+                    Value = (int)value,
+                });
+            }
+
+            return new ServiceResult<IEnumerable<SelectOption<int>>>(await Task.FromResult(result));
+        }
+
+        public async Task<ServiceResult<IEnumerable<SelectOption<int>>>> GetEventMarkingTypeAsSelectOptionsAsync()
+        {
+            var result = new List<SelectOption<int>>();
+            foreach (EventMarkingType value in Enum.GetValues(typeof(EventMarkingType)))
             {
                 result.Add(new SelectOption<int>
                 {
@@ -143,6 +159,7 @@ namespace TestMaker.EventService.Infrastructure.Services
                     EventCode = eventAndCandidate.Event.Code,
                     EventScopeType = eventAndCandidate.Event.ScopeType,
                     EventContentQuestionType = eventAndCandidate.Event.QuestionContentType,
+                    EventMarkingType = eventAndCandidate.Event.MarkingType,
                     CandidateId = eventAndCandidate.Candidate.CandidateId,
                     CandidateCode = eventAndCandidate.Candidate.Code,
                     TestId = eventAndCandidate.Event.TestId

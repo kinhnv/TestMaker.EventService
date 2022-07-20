@@ -78,10 +78,18 @@ namespace TestMaker.EventService.Api.Controllers.Admin
         }
 
         [HttpGet]
-        [Route("ContentType")]
-        public async Task<IActionResult> GetContentTypeAsSelectOptions()
+        [Route("QuestionContentType")]
+        public async Task<IActionResult> GetQuestionContentTypeAsSelectOptions()
         {
-            var result = await _eventsService.GetEventContentTypeAsSelectOptionsAsync();
+            var result = await _eventsService.GetEventQuestionContentTypeAsSelectOptionsAsync();
+            return Ok(new ApiResult<IEnumerable<SelectOption<int>>>(result));
+        }
+
+        [HttpGet]
+        [Route("MarkingType")]
+        public async Task<IActionResult> GetEventMarkingTypeAsSelectOptions()
+        {
+            var result = await _eventsService.GetEventMarkingTypeAsSelectOptionsAsync();
             return Ok(new ApiResult<IEnumerable<SelectOption<int>>>(result));
         }
     }

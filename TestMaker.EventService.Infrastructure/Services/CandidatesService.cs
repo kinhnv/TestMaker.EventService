@@ -7,8 +7,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using TestMaker.Common.Models;
-using TestMaker.EventService.Domain.Models;
 using TestMaker.EventService.Domain.Models.Candidate;
+using TestMaker.EventService.Domain.Models.CandidateAnswer;
 using TestMaker.EventService.Domain.Services;
 using TestMaker.EventService.Infrastructure.Entities;
 using TestMaker.EventService.Infrastructure.MongoEntities;
@@ -111,31 +111,74 @@ namespace TestMaker.EventService.Infrastructure.Services
                 .Select(s => s[new Random().Next(s.Length)]).ToArray());
         }
 
-        public async Task<ServiceResult<string>> GetAnswerAsync(Guid candidateId, Guid questionId)
+        public async Task<ServiceResult<Domain.Models.CandidateAnswer.CandidateAnswer>> GetAnswerAsync(Guid candidateId, Guid questionId)
         {
             var result = await _candidateAnswersRepository.GetCandidateAnswerByCandidateIdAndQuestionIdAsync(candidateId, questionId);
 
-            return new ServiceResult<string>() { Data = result?.AnswerAsJson ?? String.Empty };
+            if (result == null)
+            {
+                var candidate = await _candidatesRepository.GetAsync(candidateId);
+
+                var status = CandidateAnswerStatus.Unseen;
+
+                if (candidate == null)
+                {
+                    return new ServiceNotFoundResult<Domain.Models.CandidateAnswer.CandidateAnswer>();
+                }
+
+                if (candidate.Status == (int)CandidateStatus.Done)
+                {
+                    status = CandidateAnswerStatus.Done;
+                }
+
+                return new ServiceResult<Domain.Models.CandidateAnswer.CandidateAnswer>()
+                {
+                    Data = new Domain.Models.CandidateAnswer.CandidateAnswer
+                    {
+                        QuestionId = questionId,
+                        AnswerAsJson = String.Empty,
+                        Status = (int)status
+                    }
+                };
+            }
+
+            return new ServiceResult<Domain.Models.CandidateAnswer.CandidateAnswer>()
+            {
+                Data = new Domain.Models.CandidateAnswer.CandidateAnswer
+                {
+                    QuestionId = questionId,
+                    AnswerAsJson = result.AnswerAsJson,
+                    Status = result.Status
+                }
+            };
         }
 
-        public async Task<ServiceResult<List<TestMaker.EventService.Domain.Models.CandidateAnswer>>> GetAnswersAsync(Guid candidateId)
+        public async Task<ServiceResult<List<Domain.Models.CandidateAnswer.CandidateAnswer>>> GetAnswersAsync(Guid candidateId)
         {
             var data = await _candidateAnswersRepository.GetCandidateAnswersByCandidateIdAsync(candidateId);
 
             if (data != null)
             {
-                return new ServiceResult<List<TestMaker.EventService.Domain.Models.CandidateAnswer>>(data.Select(ca => new TestMaker.EventService.Domain.Models.CandidateAnswer
+                return new ServiceResult<List<Domain.Models.CandidateAnswer.CandidateAnswer>>(data.Select(ca => new TestMaker.EventService.Domain.Models.CandidateAnswer.CandidateAnswer
                 {
                     AnswerAsJson = ca.AnswerAsJson,
                     QuestionId = ca.QuestionId,
+                    Status = ca.Status
                 }).ToList());
             }
 
-            return new ServiceResult<List<TestMaker.EventService.Domain.Models.CandidateAnswer>>(new List<Domain.Models.CandidateAnswer>());
+            return new ServiceResult<List<Domain.Models.CandidateAnswer.CandidateAnswer>>(new List<Domain.Models.CandidateAnswer.CandidateAnswer>());
         }
 
         public async Task<ServiceResult> SubmitQuestionAsync(CandidateAnswerForSubmit answer)
         {
+            var nextStatus = (int)CandidateAnswerStatus.Doing;
+            if (answer.Marking == true && 
+                (answer.CandidateAnswerStatus == (int)CandidateAnswerStatus.Doing || answer.CandidateAnswerStatus == (int)CandidateAnswerStatus.Done))
+            {
+                nextStatus = (int)CandidateAnswerStatus.Done;
+            }
+
             var candidateAnswer = await _candidateAnswersRepository.GetCandidateAnswerByCandidateIdAndQuestionIdAsync(answer.CandidateId, answer.QuestionId);
 
             if (candidateAnswer == null)
@@ -144,12 +187,15 @@ namespace TestMaker.EventService.Infrastructure.Services
                 {
                     CandidateId = answer.CandidateId,
                     QuestionId = answer.QuestionId,
-                    AnswerAsJson = answer.AnswerAsJson
+                    AnswerAsJson = answer.AnswerAsJson,
+                    IsDeleted = false,
+                    Status = nextStatus
                 });
             }
             else
             {
                 candidateAnswer.AnswerAsJson = answer.AnswerAsJson;
+                candidateAnswer.Status = nextStatus;
                 await _candidateAnswersRepository.UpdateAsync(candidateAnswer);
             }
             return new ServiceResult();
@@ -162,6 +208,15 @@ namespace TestMaker.EventService.Infrastructure.Services
             {
                 candidate.Status = (int)CandidateStatus.Done;
                 await _candidatesRepository.UpdateAsync(candidate);
+            }
+            var candidateAnswers = await _candidateAnswersRepository.GetAsync(x => x.CandidateId == candidateId);
+            if (candidateAnswers.Any() == true)
+            {
+                candidateAnswers.ForEach(candidateAnswer =>
+                {
+                    candidateAnswer.Status = (int)CandidateAnswerStatus.Done;
+                });
+                await _candidateAnswersRepository.UpdateAsync(candidateAnswers);
             }
             return new ServiceResult();
         }
@@ -180,7 +235,7 @@ namespace TestMaker.EventService.Infrastructure.Services
             });
 
             return new ServiceResult();
-        } 
+        }
 
         public async Task<ServiceResult<PreparedTest>> GetPreparedTestTempAsync(Guid candidateId)
         {

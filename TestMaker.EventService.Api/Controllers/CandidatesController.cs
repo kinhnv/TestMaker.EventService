@@ -2,8 +2,8 @@
 using System;
 using System.Threading.Tasks;
 using TestMaker.Common.Models;
-using TestMaker.EventService.Domain.Models;
 using TestMaker.EventService.Domain.Models.Candidate;
+using TestMaker.EventService.Domain.Models.CandidateAnswer;
 using TestMaker.EventService.Domain.Services;
 
 namespace TestMaker.EventService.Api.Controllers
@@ -20,11 +20,19 @@ namespace TestMaker.EventService.Api.Controllers
         }
 
         [HttpGet]
+        [Route("GetCandidate")]
+        public async Task<IActionResult> GetCandidateAsync(Guid candidateId)
+        {
+            var result = await _candidatesService.GetCandidateAsync(candidateId);
+            return Ok(new ApiResult<CandidateForDetails>(result));
+        }
+
+        [HttpGet]
         [Route("GetAnswer")]
         public async Task<IActionResult> GetAnswerAsync(Guid candidateId, Guid questionId)
         {
             var result = await _candidatesService.GetAnswerAsync(candidateId, questionId);
-            return Ok(new ApiResult<string>(result));
+            return Ok(new ApiResult<CandidateAnswer>(result));
         }
 
         [HttpGet]
@@ -32,7 +40,7 @@ namespace TestMaker.EventService.Api.Controllers
         public async Task<IActionResult> GetAnswersAsync(Guid candidateId)
         {
             var result = await _candidatesService.GetAnswersAsync(candidateId);
-            return Ok(new ApiResult<List<TestMaker.EventService.Domain.Models.CandidateAnswer>>(result));
+            return Ok(new ApiResult<List<CandidateAnswer>>(result));
         }
 
         [HttpPost]

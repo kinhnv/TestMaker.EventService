@@ -21,6 +21,9 @@ namespace TestMaker.EventService.Domain.Models.Event
         public int QuestionContentType { get; set; }
 
         [Required]
+        public int MarkingType { get; set; }
+
+        [Required]
         public Guid TestId { get; set; }
 
     }

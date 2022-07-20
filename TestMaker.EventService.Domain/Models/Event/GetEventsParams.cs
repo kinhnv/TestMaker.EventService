@@ -9,6 +9,5 @@ namespace TestMaker.EventService.Domain.Models.Event
 {
     public class GetEventsParams : GetPaginationParams
     {
-        public bool IsDeleted { get; set; } = false;
     }
 }

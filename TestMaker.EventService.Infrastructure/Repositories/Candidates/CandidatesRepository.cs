@@ -13,5 +13,17 @@ namespace TestMaker.EventService.Infrastructure.Repositories.Candidates
         public CandidatesRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
         }
+
+        public async Task<Event> GetEventByCandidateId(Guid candidateId)
+        {
+            var eventAsQueryable = _dbContext.Set<Event>().Where(x => !x.IsDeleted);
+            var candidateAsQueryable = _dbContext.Set<Candidate>().Where(x => !x.IsDeleted && x.CandidateId == candidateId);
+
+            var @event = (from e in eventAsQueryable
+                          join c in candidateAsQueryable on e.EventId equals c.EventId
+                          select e).Single();
+
+            return await Task.FromResult(@event);
+        }
     }
 }

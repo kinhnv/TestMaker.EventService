@@ -28,6 +28,9 @@ namespace TestMaker.EventService.Infrastructure.Extensions
                 )
                 .ForMember(eventForList => eventForList.QuestionContentType, 
                     option => option.MapFrom(e => e.QuestionContentTypeAsEnum.GetEnumName())
+                )
+                .ForMember(eventForList => eventForList.MarkingType,
+                    option => option.MapFrom(e => e.MarkingTypeAsEnum.GetEnumName())
                 );
             CreateMap<Event, EventForDetails>();
 

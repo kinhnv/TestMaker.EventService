@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestMaker.EventService.Domain.Models
+namespace TestMaker.EventService.Domain.Models.CandidateAnswer
 {
     public class CandidateAnswerForSubmit
     {
@@ -13,5 +13,9 @@ namespace TestMaker.EventService.Domain.Models
         public Guid QuestionId { get; set; }
 
         public string AnswerAsJson { get; set; }
+
+        public int? CandidateAnswerStatus { get; set; }
+
+        public bool Marking { get; set; } = false;
     }
 }
