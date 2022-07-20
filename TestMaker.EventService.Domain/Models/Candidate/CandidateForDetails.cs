@@ -19,5 +19,7 @@ namespace TestMaker.EventService.Domain.Models.Candidate
         [Required]
         [StringLength(8)]
         public string Code { get; set; }
+
+        public int Status { get; set; }
     }
 }

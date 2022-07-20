@@ -10,6 +10,7 @@ namespace TestMaker.EventService.Domain.Models.CandidateAnswer
     {
         Unseen = 0,
         Seen = 1,
-        Done = 2
+        Done = 2,
+        Doing = 3
     }
 }

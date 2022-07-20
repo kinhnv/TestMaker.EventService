@@ -10,5 +10,6 @@ namespace TestMaker.EventService.Infrastructure.Repositories.Candidates
 {
     public interface ICandidatesRepository: IRepository<Candidate>
     {
+        Task<Event> GetEventByCandidateId(Guid candidateId);
     }
 }

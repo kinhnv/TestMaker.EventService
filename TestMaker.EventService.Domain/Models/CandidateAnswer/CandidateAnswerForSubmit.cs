@@ -13,5 +13,9 @@ namespace TestMaker.EventService.Domain.Models.CandidateAnswer
         public Guid QuestionId { get; set; }
 
         public string AnswerAsJson { get; set; }
+
+        public int? CandidateAnswerStatus { get; set; }
+
+        public bool Marking { get; set; } = false;
     }
 }

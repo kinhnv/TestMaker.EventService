@@ -20,6 +20,14 @@ namespace TestMaker.EventService.Api.Controllers
         }
 
         [HttpGet]
+        [Route("GetCandidate")]
+        public async Task<IActionResult> GetCandidateAsync(Guid candidateId)
+        {
+            var result = await _candidatesService.GetCandidateAsync(candidateId);
+            return Ok(new ApiResult<CandidateForDetails>(result));
+        }
+
+        [HttpGet]
         [Route("GetAnswer")]
         public async Task<IActionResult> GetAnswerAsync(Guid candidateId, Guid questionId)
         {
